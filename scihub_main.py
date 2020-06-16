@@ -17,9 +17,9 @@ sh = SciHub()
 # url or doi
 # url = '10.1109/ASCC.2017.8287158;10.1007/BF00126069;https://hal.archives-ouvertes.fr/hal-02433405'
 
-strext='n'
+isexit='n'
 
-while strext=='n':
+while isexit=='n':
 
     strin = input('输入url或doi(多个以;隔开):')
     
@@ -50,6 +50,6 @@ while strext=='n':
         else:
             print('下载失败...')
             
-    strext = input('是否退出?(y/n)')
+    isexit = input('是否退出?(y/n)')
 
     
