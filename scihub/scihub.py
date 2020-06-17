@@ -28,7 +28,7 @@ urllib3.disable_warnings()
 
 # constants
 # SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar'
-SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C5' 
+SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0,5&as_ylo=2020' 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0'}
 
 class SciHub(object):
@@ -84,10 +84,13 @@ class SciHub(object):
 
         while True:
             try:
-                # res = self.sess.get(SCHOLARS_BASE_URL, params={'q': query, 'start': start})   
-                scholar_num = '&start={}'.format(start)
-                scholar_key = '&q='+'+'.join(query.split(' '))
-                scholar_url = SCHOLARS_BASE_URL+scholar_key+scholar_num
+                if not query.count('scholar.google.com'):
+                    # res = self.sess.get(SCHOLARS_BASE_URL, params={'q': query, 'start': start})   
+                    scholar_num = '&start={}'.format(start)
+                    scholar_key = '&q='+'+'.join(query.split(' '))
+                    scholar_url = SCHOLARS_BASE_URL+scholar_key+scholar_num
+                else:
+                    scholar_url = query
                 res = self.sess.get(scholar_url)
             except requests.exceptions.RequestException as e:
                 results['err'] = 'Failed to complete search with query %s (connection error)' % query
@@ -151,6 +154,8 @@ class SciHub(object):
             # add support for arxiv
             if not identifier.count('arxiv'):
                 url = self._get_direct_url(identifier)
+                if not url:
+                    return {'err': 'Direct link to the pdf not found'}
                 endstr = '#view=FitH'
                 if url[-len(endstr):]==endstr:
                     url = url[:-len(endstr)]

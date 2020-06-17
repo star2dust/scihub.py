@@ -20,6 +20,7 @@ while isexit=='n':
     
     limit = int(input('输入搜索文章数:'))
     
+    print('正在搜索相关文章...')
     # retrieve 5 articles on Google Scholars related to 'bittorrent'
     results = sh.search(keyword, limit)
     
@@ -43,5 +44,6 @@ while isexit=='n':
                     print('{}下载成功!'.format(paper_name))
                 else:
                     print('{}下载失败...'.format(paper_name))
+                    print(resdown['err'])
        
     isexit = input('是否退出?(y/n)')
