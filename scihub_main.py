@@ -11,8 +11,8 @@ import sys
 sys.path.append('.\\scihub')
 
 from scihub import SciHub
-
 sh = SciHub()
+
 
 # url or doi
 # url = '10.1109/ASCC.2017.8287158;10.1007/BF00126069;https://hal.archives-ouvertes.fr/hal-02433405'
@@ -30,37 +30,29 @@ while isexit=='n':
         print(url_list[num])
     
     for ind,url in enumerate(url_list):
-        
-        print('正在查找'+url)
-        
-        if url.count('scholar.google.com'):
+
+        print('正在查找第{}篇...'.format(ind+1))
+        # fetch specific article (don't download to disk)
+        # this will return a dictionary in the form 
+        # {'pdf': PDF_DATA,
+        #  'url': SOURCE_URL,
+        #  'name': UNIQUE_GENERATED NAME
+        # } 
+        result = sh.fetch(url)
             
-            limit = int(input('输入搜索文章数:'))
-            
-            result = sh.search(url,limit)
-            # fetch specific article (don't download to disk)
-            # this will return a dictionary in the form 
-            # {'pdf': PDF_DATA,
-            #  'url': SOURCE_URL,
-            #  'name': UNIQUE_GENERATED NAME
-            # }       
+        if 'err' in result:
+            print('错误：' + result['err'])
         else:
-            result = sh.fetch(url)
-            
-        if not 'url' in result:
-            print('未找到'+url)
-            print(result['err'])
-        else:
-            print('已找到'+url)    
+            print('已找到第{}篇...'.format(ind+1))    
             # exactly the same thing as fetch except downloads the articles to disk
             # if no path given, a unique name will be used as the file name
-            print('正在下载'+url)
+            print('正在下载第{}篇...'.format(ind+1))
             resdown = sh.download(result['url'])
-            if not 'err' in resdown:
-                print('下载成功！')
+            if 'err' in resdown:
+                print('错误：' + resdown['err'])
             else:
-                print('下载失败...')
-                print(resdown['err'])
+                print('下载成功！')
+                
             
     isexit = input('是否退出?(y/n)')
 

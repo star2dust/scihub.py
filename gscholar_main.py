@@ -22,11 +22,10 @@ while isexit=='n':
     
     print('正在搜索相关文章...')
     # retrieve 5 articles on Google Scholars related to 'bittorrent'
-    results = sh.search(keyword, limit)
+    results = sh.search(keyword, limit, True)
     
     if not results['papers']:
-        print('没有搜索到相关文章...')
-        print(results['err'])
+        print('错误：'+results['err'])
     else:    
         for num in range(len(results['papers'])):
             print(results['papers'][num]['name'])
@@ -44,6 +43,6 @@ while isexit=='n':
                     print('{}下载成功!'.format(paper_name))
                 else:
                     print('{}下载失败...'.format(paper_name))
-                    print(resdown['err'])
+                    print('错误：'+resdown['err'])
        
     isexit = input('是否退出?(y/n)')

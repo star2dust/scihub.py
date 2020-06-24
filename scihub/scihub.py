@@ -27,8 +27,7 @@ logger.setLevel(logging.DEBUG)
 urllib3.disable_warnings()
 
 # constants
-# SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar'
-SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0,5&as_ylo=2020' 
+SCHOLARS_BASE_URL = 'https://scholar.google.com/scholar?hl=zh-CN'
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0'}
 
 class SciHub(object):
@@ -80,25 +79,27 @@ class SciHub(object):
         captchas can potentially prevent searches after a certain limit.
         """
         start = 0
+        ylo = 2020
         results = {'papers': []}
 
         while True:
             try:
-                if not query.count('scholar.google.com'):
-                    # res = self.sess.get(SCHOLARS_BASE_URL, params={'q': query, 'start': start})   
-                    scholar_num = '&start={}'.format(start)
-                    scholar_key = '&q='+'+'.join(query.split(' '))
-                    scholar_url = SCHOLARS_BASE_URL+scholar_key+scholar_num
-                else:
-                    scholar_url = query
-                res = self.sess.get(scholar_url)
+                # keywords search 
+                res = self.sess.get(SCHOLARS_BASE_URL, params={'q': query, 'start': start, 'as_ylo': ylo}) 
+  
+                # alternative codes:
+                # scholar_filter = '&as_ylo={}&as_yhi={}&start={}'.format(ylo,yhi,start)
+                # scholar_key = '&q={}'.format(+'.join(query.split(' ')))
+                # res = self.sess.get(SCHOLARS_BASE_URL+scholar_key+scholar_filter)
+
             except requests.exceptions.RequestException as e:
                 results['err'] = 'Failed to complete search with query %s (connection error)' % query
                 return results
 
             s = self._get_soup(res.content)
+            
             papers = s.find_all('div', class_="gs_ri")
-
+            
             if not papers:
                 if 'CAPTCHA' in str(res.content):
                     results['err'] = 'Failed to complete search with query %s (captcha)' % query
