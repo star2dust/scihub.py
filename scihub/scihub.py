@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import logging
 import os
+import pdb
 
 import requests
 import urllib3
@@ -157,9 +158,11 @@ class SciHub(object):
                 url = self._get_direct_url(identifier)
                 if not url:
                     return {'err': 'Direct link to the pdf not found'}
-                endstr = '#view=FitH'
-                if url[-len(endstr):]==endstr:
-                    url = url[:-len(endstr)]
+
+#                url = url[:url.index('.pdf')+4]
+#                endstr = '#view=FitH'
+#                if url[-len(endstr):]==endstr:
+#                    url = url[:-len(endstr)]
             else:
                 url = '/'.join(identifier.split('/')[:-2])+'/pdf/'+identifier.split('/')[-1]
                 if url.split('/')[-1][-4:]!='.pdf':
